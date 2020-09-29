@@ -1,9 +1,13 @@
 import React, {useEffect, useMemo, useState} from "react";
+import moment from 'moment';
 
 import {Container, Content, Filters} from './styled'
 import ContentHeader from "../../components/ContentHeader";
 import SelectInput from "../../components/SelectInput";
 import HistoryFinanceCard from "../../components/HistoryFinanceCard";
+import formatCurrency from "../../utils/formatCurrency";
+import formatDate from "../../utils/formatDate";
+
 import gains from "../../repositories/gains";
 import expenses from "../../repositories/expenses";
 
@@ -49,9 +53,9 @@ const List: React.FC<IRouteParams> = ({ match }) => {
          return {
             id: Math.random() * data.length,
             description: item.description,
-            amountFormatted: item.amount,
+            amountFormatted: formatCurrency(Number(item.amount)),
             frequency: item.frequency,
-            dateFormatted: item.date,
+            dateFormatted: formatDate(item.date),
             tagColor: item.frequency === 'recorrente' ? '#e44c4e'  : '#4e41f0'
          }
       })
