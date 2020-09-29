@@ -10,6 +10,7 @@ import formatDate from "../../utils/formatDate";
 
 import gains from "../../repositories/gains";
 import expenses from "../../repositories/expenses";
+import listOfMonths from '../../utils/months';
 
 interface IRouteParams {
    match: {
@@ -44,9 +45,39 @@ const List: React.FC<IRouteParams> = ({ match }) => {
          lineColor: '#E44c4e'
       }
    }, [type]);
+
    const listData = useMemo(() => {
       return type === 'entry-balance' ? gains : expenses;
    }, [type]);
+
+   const years = useMemo(() => {
+      let uniqueYears: number[] = [];
+
+      listData.forEach(item => {
+         const date = new Date(item.date);
+         const year = date.getFullYear();
+
+         if (!uniqueYears.includes(year)) {
+            uniqueYears.push(year);
+         }
+      });
+
+      return uniqueYears.map(year => {
+         return {
+            value: year,
+            label: year,
+         }
+      });
+   }, [listData]);
+
+   const months = useMemo(() => {
+      return listOfMonths.map((month, index) => {
+         return {
+            value: index + 1,
+            label: month,
+         }
+      })
+   }, []);
 
    useEffect(() => {
       const filteredData = listData.filter(item => {
@@ -72,17 +103,17 @@ const List: React.FC<IRouteParams> = ({ match }) => {
 
    },[listData, monthSelected, yearSelected]);
 
-   const months = [
-      {value: 7, label: 'Julho'},
-      {value: 5, label: 'Maio'},
-      {value: 1, label: 'Janeiro'},
-   ];
+   // const months = [
+   //    {value: 7, label: 'Julho'},
+   //    {value: 5, label: 'Maio'},
+   //    {value: 1, label: 'Janeiro'},
+   // ];
 
-   const years = [
-      {value: 2020, label: 2020},
-      {value: 2019, label: 2019},
-      {value: 2018, label: 2018},
-   ];
+   // const years = [
+   //    {value: 2020, label: 2020},
+   //    {value: 2019, label: 2019},
+   //    {value: 2018, label: 2018},
+   // ];
 
   return (
    <Container>
