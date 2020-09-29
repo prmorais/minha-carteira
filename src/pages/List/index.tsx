@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from "react";
-import moment from 'moment';
+import {v4} from 'uuid'
 
 import {Container, Content, Filters} from './styled'
 import ContentHeader from "../../components/ContentHeader";
@@ -20,7 +20,7 @@ interface IRouteParams {
 }
 
 interface IData {
-   id: number;
+   id: string;
    description: string;
    amountFormatted: string;
    frequency: string;
@@ -31,9 +31,10 @@ interface IData {
 const List: React.FC<IRouteParams> = ({ match }) => {
 
    const [data, setData] = useState<IData[]>([]);
+   const [monthSelected, setMonthSelected] = useState<string>(String(new Date().getMonth() + 1));
+   const [yearSelected, setYearSelected] = useState<string>(String(new Date().getFullYear()));
 
    const { type } = match.params;
-
    const properties = useMemo(() => {
       return type === 'entry-balance' ? {
          title: 'Entradas',
@@ -43,29 +44,38 @@ const List: React.FC<IRouteParams> = ({ match }) => {
          lineColor: '#E44c4e'
       }
    }, [type]);
-
    const listData = useMemo(() => {
       return type === 'entry-balance' ? gains : expenses;
    }, [type]);
 
    useEffect(() => {
-      const response = listData.map(item => {
+      const filteredData = listData.filter(item => {
+         const date = new Date(item.date);
+         const month = String(date.getMonth() + 1);
+         const year = String(date.getFullYear());
+
+         return month === monthSelected && year === yearSelected;
+      });
+
+      const formattedData = filteredData.map(item => {
          return {
-            id: Math.random() * data.length,
+            id: v4(),
             description: item.description,
             amountFormatted: formatCurrency(Number(item.amount)),
             frequency: item.frequency,
             dateFormatted: formatDate(item.date),
-            tagColor: item.frequency === 'recorrente' ? '#e44c4e'  : '#4e41f0'
+            tagColor: item.frequency === 'recorrente' ? '#e44c4e' : '#4e41f0'
          }
-      })
-      setData(response);
-   },[listData]);
+      });
+
+      setData(formattedData);
+
+   },[listData, monthSelected, yearSelected]);
 
    const months = [
       {value: 7, label: 'Julho'},
-      {value: 8, label: 'Agosto'},
-      {value: 9, label: 'Setembro'},
+      {value: 5, label: 'Maio'},
+      {value: 1, label: 'Janeiro'},
    ];
 
    const years = [
@@ -77,8 +87,14 @@ const List: React.FC<IRouteParams> = ({ match }) => {
   return (
    <Container>
        <ContentHeader title={properties.title} lineColor={properties.lineColor}>
-           <SelectInput options={months}/>
-           <SelectInput options={years}/>
+           <SelectInput
+               options={months}
+               onChange={event => setMonthSelected(event.target.value)}
+               defaultValue={monthSelected} />
+           <SelectInput
+               options={years}
+               onChange={event => setYearSelected(event.target.value)}
+               defaultValue={yearSelected} />
        </ContentHeader>
 
       <Filters>
