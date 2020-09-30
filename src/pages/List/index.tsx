@@ -95,7 +95,7 @@ const List: React.FC<IRouteParams> = ({ match }) => {
             amountFormatted: formatCurrency(Number(item.amount)),
             frequency: item.frequency,
             dateFormatted: formatDate(item.date),
-            tagColor: item.frequency === 'recorrente' ? '#e44c4e' : '#4e41f0'
+            tagColor: item.frequency === 'recorrente' ? '#4e41f0' : '#e44c4e'
          }
       });
 
@@ -116,7 +116,7 @@ const List: React.FC<IRouteParams> = ({ match }) => {
    // ];
 
   return (
-   <Container>
+   <Container>q
        <ContentHeader title={properties.title} lineColor={properties.lineColor}>
            <SelectInput
                options={months}
