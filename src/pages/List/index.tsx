@@ -35,8 +35,8 @@ const List: React.FC<IRouteParams> = ({ match }) => {
    const movimentType  = match.params.type;
 
    const [data, setData] = useState<IData[]>([]);
-   const [monthSelected, setMonthSelected] = useState<string>(String(new Date().getMonth() + 1));
-   const [yearSelected, setYearSelected] = useState<string>(String(new Date().getFullYear()));
+   const [monthSelected, setMonthSelected] = useState<number>(new Date().getMonth() + 1);
+   const [yearSelected, setYearSelected] = useState<number>(new Date().getFullYear());
    const [frequencyFilterSelected, setFrequencyFilterSelected] = useState<string[]>(['recorrente', 'eventual']);
 
    const pageData = useMemo(() => {
@@ -94,13 +94,31 @@ const List: React.FC<IRouteParams> = ({ match }) => {
       }
    };
 
+   const handleMonthSelected = (month: string) => {
+      try {
+         const parseMonth = Number(month);
+         setMonthSelected(parseMonth);
+      } catch (error) {
+         throw new Error('Invalid month value. Is accept 0 - 12.')
+      }
+   };
+
+   const handleYearSelected = (year: string) => {
+      try {
+         const parseYear = Number(year);
+         setYearSelected(parseYear);
+      } catch (error) {
+         throw new Error('Invalid year value. Is accept integer numbers.')
+      }
+   };
+
    useEffect(() => {
       const { data } = pageData;
 
       const filteredData = data.filter(item => {
          const date = new Date(item.date);
-         const month = String(date.getMonth() + 1);
-         const year = String(date.getFullYear());
+         const month = date.getMonth() + 1;
+         const year = date.getFullYear();
 
          return month === monthSelected &&
              year === yearSelected &&
@@ -127,12 +145,12 @@ const List: React.FC<IRouteParams> = ({ match }) => {
        <ContentHeader title={pageData.title} lineColor={pageData.lineColor}>
            <SelectInput
                options={months}
-               onChange={event => setMonthSelected(event.target.value)}
+               onChange={event => handleMonthSelected(event.target.value)}
                defaultValue={monthSelected}
            />
            <SelectInput
                options={years}
-               onChange={event => setYearSelected(event.target.value)}
+               onChange={event => handleYearSelected(event.target.value)}
                defaultValue={yearSelected}
            />
        </ContentHeader>
