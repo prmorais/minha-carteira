@@ -1,8 +1,9 @@
 import React, {useMemo, useState} from "react";
 
-import {Container} from './styled'
+import {Container, Content} from './styled'
 import ContentHeader from "../../components/ContentHeader";
 import SelectInput from "../../components/SelectInput";
+import WalletBox from "../../components/WalletBox";
 
 import listOfMonths from "../../utils/months";
 
@@ -42,12 +43,6 @@ const Dashboard: React.FC = () => {
         })
     }, []);
 
-    // const options = [
-    //     {value: 'Paulo', label: 'Paulo'},
-    //     {value: 'Fernanda', label: 'Fernanda'},
-    //     {value: 'Patricia', label: 'Patricia'},
-    // ];
-
     const handleMonthSelected = (month: string) => {
         try {
             const parseMonth = Number(month);
@@ -80,6 +75,30 @@ const Dashboard: React.FC = () => {
               defaultValue={yearSelected}
           />
       </ContentHeader>
+
+       <Content>
+           <WalletBox
+               title="Saldo"
+               amount={150.00}
+               footerLabel="Atualizado com base nas entradas e saídas"
+               icon="dolar"
+               color="#4e41f0"
+           />
+           <WalletBox
+               title="entradas"
+               amount={5000.00}
+               footerLabel="Atualizado com base nas entradas e saídas"
+               icon="arrowUp"
+               color="#f7931b"
+           />
+           <WalletBox
+               title="saídas"
+               amount={4850.00}
+               footerLabel="Atualizado com base nas entradas e saídas"
+               icon="arrowDown"
+               color="#e44c4e"
+           />
+       </Content>
    </Container>
   );
 };
